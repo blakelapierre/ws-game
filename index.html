@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>game</title>
+
+    <script>
+
+      var ws = new WebSocket('ws://' + window.location.host + '/ws');
+
+      ws.addEventListener('open', () => {
+        ws.send('test');
+      });
+
+      var gamePackage;
+      ws.addEventListener('message', event => {
+        var message = event.data;
+        console.log('message', message);
+
+        if (!gamePackage) {
+          gamePackage = JSON.parse(message);
+          gamePackage.logic = new Function(`return ${gamePackage.logic}`)();
+        }
+        else {
+          gamePackage.logic(JSON.parse(message));
+        }
+      });
+
+    </script>
+  </head>
+  <body>
+  
+  </body>
+</html>
